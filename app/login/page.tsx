@@ -16,74 +16,74 @@ import {
   User, 
   Lock,
   GraduationCap,
-  BookOpen,
-  Settings,
+  Shield,
   ArrowLeft
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [motivationalMessage, setMotivationalMessage] = useState('');
+  const [motivationalMessage, setMotivationalMessage] = useState(motivationalMessages[0]);
+  const [messageIndex, setMessageIndex] = useState(0);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('student');
+  const [role, setRole] = useState<UserRole>('teacher');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Rotate motivational messages every 4 seconds
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
-    setMotivationalMessage(motivationalMessages[randomIndex]);
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % motivationalMessages.length);
+    }, 4000);
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    setMotivationalMessage(motivationalMessages[messageIndex]);
+  }, [messageIndex]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    // Simulate login delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 800));
 
     const user = demoUsers.find(
       u => u.username === username && u.password === password && u.role === role
     );
 
     if (user) {
-      // Store user in localStorage for demo
       localStorage.setItem('currentUser', JSON.stringify(user));
-      
-      // Redirect based on role
-      switch (role) {
-        case 'teacher':
-          router.push('/dashboard/teacher');
-          break;
-        case 'admin':
-          router.push('/dashboard/admin');
-          break;
-        case 'student':
-          router.push('/dashboard/student');
-          break;
-      }
+      router.push(`/dashboard/${role}`);
     } else {
       setError('Invalid credentials. Please check username, password, and role.');
       setIsLoading(false);
     }
   };
 
+  const handleRoleSelect = (selectedRole: UserRole) => {
+    setRole(selectedRole);
+    setError('');
+  };
+
   const roles = [
-    { value: 'teacher' as UserRole, label: 'Teacher', icon: GraduationCap },
-    { value: 'student' as UserRole, label: 'Student', icon: BookOpen },
-    { value: 'admin' as UserRole, label: 'Admin', icon: Settings },
+    { value: 'teacher' as UserRole, label: 'Teacher Login', icon: GraduationCap, color: 'bg-primary hover:bg-primary/90' },
+    { value: 'admin' as UserRole, label: 'Admin Login', icon: Shield, color: 'bg-secondary hover:bg-secondary/90' },
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen relative overflow-hidden bg-background flex items-center justify-center">
       <FloatingParticles />
+      
+      {/* Subtle background decorations */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-30" />
       
       {/* Back to Home */}
       <Link href="/" className="fixed top-6 left-6 z-50">
-        <Button variant="ghost" size="sm" className="glass">
+        <Button variant="ghost" size="sm" className="glass text-foreground">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back
         </Button>
@@ -107,26 +107,25 @@ export default function LoginPage() {
               className="mt-8"
             >
               <h1 className="text-4xl font-bold mb-2">
-                <span className="text-foreground">Curious</span>{' '}
-                <span className="bg-gradient-to-r from-secondary to-support bg-clip-text text-transparent">
-                  Nest
-                </span>
+                <span className="gradient-text">Curious Nest</span>
               </h1>
-              <p className="text-muted-foreground">Explore • Learn • Grow</p>
+              <p className="text-muted-foreground text-lg">Explore • Learn • Grow</p>
             </motion.div>
 
-            {/* Motivational Message */}
+            {/* Rotating Motivational Message */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
+              key={messageIndex}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
               className="mt-8 glass rounded-2xl px-6 py-4 max-w-sm"
             >
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-accent" />
-                <span className="text-sm font-medium text-foreground">Today&apos;s Message</span>
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-foreground">Inspiration</span>
               </div>
-              <p className="text-muted-foreground text-sm">{motivationalMessage}</p>
+              <p className="text-muted-foreground text-sm italic">&quot;{motivationalMessage}&quot;</p>
             </motion.div>
           </motion.div>
 
@@ -136,40 +135,36 @@ export default function LoginPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="glass rounded-3xl p-8 md:p-12 max-w-md mx-auto">
+            <div className="bg-card rounded-3xl p-8 md:p-12 max-w-md mx-auto card-shadow border border-border">
               {/* Mobile Logo */}
-              <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-primary-foreground" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-foreground">Curious Nest</h1>
-                  <p className="text-xs text-muted-foreground">Explore • Learn • Grow</p>
-                </div>
+              <div className="lg:hidden flex flex-col items-center mb-8">
+                <AnimatedOwl size="sm" showParticles={false} />
+                <h1 className="text-2xl font-bold gradient-text mt-4">Curious Nest</h1>
+                <p className="text-xs text-muted-foreground">Explore • Learn • Grow</p>
               </div>
 
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-foreground mb-2">Welcome Back</h2>
-                <p className="text-muted-foreground text-sm">Sign in to continue your learning journey</p>
+                <p className="text-muted-foreground text-sm">Sign in to your dashboard</p>
               </div>
 
-              {/* Role Selector */}
+              {/* Role Selector Buttons */}
               <div className="mb-6">
                 <Label className="text-sm font-medium text-foreground mb-3 block">Select Role</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {roles.map(({ value, label, icon: Icon }) => (
+                <div className="grid grid-cols-2 gap-3">
+                  {roles.map(({ value, label, icon: Icon, color }) => (
                     <button
                       key={value}
                       type="button"
-                      onClick={() => setRole(value)}
-                      className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200 ${
+                      onClick={() => handleRoleSelect(value)}
+                      className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-200 border-2 ${
                         role === value
-                          ? 'bg-primary text-primary-foreground shadow-lg'
-                          : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                          ? `${color} text-primary-foreground border-transparent shadow-lg`
+                          : 'bg-muted/30 text-muted-foreground border-border hover:border-primary/50 hover:bg-muted/50'
                       }`}
                     >
-                      <Icon className="w-5 h-5" />
-                      <span className="text-xs font-medium">{label}</span>
+                      <Icon className="w-6 h-6" />
+                      <span className="text-sm font-medium">{label}</span>
                     </button>
                   ))}
                 </div>
@@ -189,7 +184,7 @@ export default function LoginPage() {
                       placeholder="Enter username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="pl-10 bg-background/50 border-border/50 focus:border-secondary"
+                      className="pl-10 bg-background border-border focus:border-primary"
                       required
                     />
                   </div>
@@ -208,7 +203,7 @@ export default function LoginPage() {
                       placeholder="Enter password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10 pr-10 bg-background/50 border-border/50 focus:border-secondary"
+                      className="pl-10 pr-10 bg-background border-border focus:border-primary"
                       required
                     />
                     <button
@@ -226,7 +221,7 @@ export default function LoginPage() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-destructive text-sm text-center bg-destructive/10 rounded-lg py-2"
+                    className="text-destructive text-sm text-center bg-destructive/10 rounded-lg py-2 px-3"
                   >
                     {error}
                   </motion.div>
@@ -235,7 +230,7 @@ export default function LoginPage() {
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full bg-primary hover:bg-primary/90"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                   size="lg"
                   disabled={isLoading}
                 >
@@ -252,23 +247,28 @@ export default function LoginPage() {
               </form>
 
               {/* Demo Credentials */}
-              <div className="mt-8 pt-6 border-t border-border/50">
-                <p className="text-xs text-muted-foreground text-center mb-4">Demo Credentials</p>
-                <div className="grid grid-cols-3 gap-3 text-xs">
-                  <div className="bg-secondary/10 rounded-lg p-3 text-center">
-                    <div className="font-medium text-secondary mb-1">Teacher</div>
-                    <div className="text-muted-foreground">bhagya</div>
-                    <div className="text-muted-foreground">demo123</div>
+              <div className="mt-8 pt-6 border-t border-border">
+                <p className="text-xs text-muted-foreground text-center mb-4 font-medium">Demo Credentials</p>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-primary/10 rounded-xl p-4 text-center border border-primary/20">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <GraduationCap className="w-4 h-4 text-primary" />
+                      <span className="font-semibold text-primary">Teacher</span>
+                    </div>
+                    <div className="text-muted-foreground space-y-1">
+                      <p><span className="text-foreground font-medium">User:</span> teacher</p>
+                      <p><span className="text-foreground font-medium">Pass:</span> curious123</p>
+                    </div>
                   </div>
-                  <div className="bg-nature/10 rounded-lg p-3 text-center">
-                    <div className="font-medium text-nature mb-1">Student</div>
-                    <div className="text-muted-foreground">indu</div>
-                    <div className="text-muted-foreground">demo123</div>
-                  </div>
-                  <div className="bg-support/10 rounded-lg p-3 text-center">
-                    <div className="font-medium text-support mb-1">Admin</div>
-                    <div className="text-muted-foreground">aravind</div>
-                    <div className="text-muted-foreground">demo123</div>
+                  <div className="bg-secondary/10 rounded-xl p-4 text-center border border-secondary/20">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Shield className="w-4 h-4 text-secondary" />
+                      <span className="font-semibold text-secondary">Admin</span>
+                    </div>
+                    <div className="text-muted-foreground space-y-1">
+                      <p><span className="text-foreground font-medium">User:</span> admin</p>
+                      <p><span className="text-foreground font-medium">Pass:</span> admin123</p>
+                    </div>
                   </div>
                 </div>
               </div>

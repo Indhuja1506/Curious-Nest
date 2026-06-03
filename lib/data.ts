@@ -1,57 +1,42 @@
-// Motivational messages
+// Motivational messages - rotating every few seconds
 export const motivationalMessages = [
-  "Curiosity unlocked. Ready for today's adventure?",
-  "Your next discovery is waiting.",
-  "Learning level activated.",
-  "Brain loading... 98%",
-  "Today's experiment may change tomorrow.",
-  "Warning: Excessive curiosity detected.",
-  "Ready to break something and learn why?",
-  "Future inventor detected.",
-  "Science is curiosity with evidence.",
-  "Achievement unlocked: Showing up.",
-  "Exploration mode enabled.",
-  "Let's build the future together.",
+  "Every experiment begins with curiosity.",
+  "Learning becomes powerful when it is visible.",
+  "Mistakes are proof that learning is happening.",
+  "Explore. Learn. Grow.",
 ];
 
-export type UserRole = 'teacher' | 'student' | 'admin';
+export type UserRole = 'teacher' | 'admin';
 
 export interface User {
   username: string;
   password: string;
   role: UserRole;
   name: string;
-  avatar?: string;
 }
 
+// Demo credentials as specified
 export const demoUsers: User[] = [
-  { username: 'bhagya', password: 'demo123', role: 'teacher', name: 'Bhagya' },
-  { username: 'aravind', password: 'demo123', role: 'admin', name: 'Aravind' },
-  { username: 'indu', password: 'demo123', role: 'student', name: 'Indu' },
+  { username: 'teacher', password: 'curious123', role: 'teacher', name: 'Teacher' },
+  { username: 'admin', password: 'admin123', role: 'admin', name: 'Admin' },
 ];
 
-export type AttendanceStatus = 'present' | 'absent' | 'away' | 'late';
-export type ExperimentStatus = 'not-started' | 'in-progress' | 'completed' | 'paused';
-export type FocusStatus = 'focused' | 'distracted' | 'away' | 'needs-help';
-export type AIStatus = 'idle' | 'assisting' | 'monitoring' | 'correcting';
-
-export interface Student {
-  id: string;
-  name: string;
-  deskNumber: string;
-  attendanceStatus: AttendanceStatus;
-  experimentStatus: ExperimentStatus;
-  focusStatus: FocusStatus;
-  aiStatus: AIStatus;
-  loginTime?: string;
-  focusScore: number;
-  learningStreak: number;
-  currentExperiment?: string;
-  currentStep?: number;
-  totalSteps?: number;
+// Data model with exact fields specified
+export interface StudentRecord {
+  StudentID: string;
+  Timestamp: string;
+  AwayDurationSeconds: number;
+  CurrentExperiment: string;
+  DeskID: string;
+  ErrorDescription: string;
+  MistakeDetected: boolean;
+  PreferredLearningStyle: 'Visual' | 'Auditory' | 'Reading/Writing' | 'Kinesthetic';
+  StudentName: string;
+  StudentPresent: boolean;
+  SuggestedFix: string;
 }
 
-// Generate 30 student names as requested
+// Generate 30 student names
 export const studentNames = [
   'Indu', 'Sameer', 'Nikhil', 'Ria', 'Aarav',
   'Priya', 'Rohan', 'Ananya', 'Arjun', 'Diya',
@@ -61,8 +46,8 @@ export const studentNames = [
   'Arnav', 'Siya', 'Karan', 'Sneha', 'Dhruv'
 ];
 
-// Generate desk numbers (A1-A10, B1-B10, C1-C10)
-const generateDeskNumbers = (): string[] => {
+// Generate desk IDs (A1-A10, B1-B10, C1-C10)
+const generateDeskIDs = (): string[] => {
   const desks: string[] = [];
   ['A', 'B', 'C'].forEach(row => {
     for (let i = 1; i <= 10; i++) {
@@ -72,289 +57,202 @@ const generateDeskNumbers = (): string[] => {
   return desks;
 };
 
-const deskNumbers = generateDeskNumbers();
+const deskIDs = generateDeskIDs();
+
+const experiments = [
+  "Ohm's Law Verification",
+  "Pendulum Period",
+  "Acid-Base Titration",
+  "Plant Cell Observation",
+  "Electric Circuit",
+  "Light Refraction",
+  "Magnetism Study"
+];
+
+const learningStyles: StudentRecord['PreferredLearningStyle'][] = [
+  'Visual', 'Auditory', 'Reading/Writing', 'Kinesthetic'
+];
+
+const errorDescriptions = [
+  'Incorrect resistor connection - polarity reversed',
+  'Wrong indicator used in titration',
+  'Missing ground connection',
+  'Incorrect angle measurement',
+  'Battery connection reversed',
+  'Wrong chemical concentration',
+  'Improper microscope focus',
+  'Circuit not closed properly',
+  '',
+  '',
+  '',
+  ''
+];
+
+const suggestedFixes = [
+  'Reverse the polarity of the resistor connections',
+  'Use phenolphthalein indicator for acid-base titration',
+  'Connect the ground wire to the negative terminal',
+  'Use a protractor to measure the angle accurately',
+  'Reverse the battery terminals',
+  'Dilute the solution to the correct concentration',
+  'Adjust the coarse and fine focus knobs',
+  'Ensure all connections are secure and the circuit is closed',
+  '',
+  '',
+  '',
+  ''
+];
 
 // Generate realistic mock student data
-export const generateStudents = (): Student[] => {
+export const generateStudentRecords = (): StudentRecord[] => {
+  const now = new Date();
+  
   return studentNames.map((name, index) => {
-    const statuses: AttendanceStatus[] = ['present', 'present', 'present', 'present', 'away', 'late'];
-    const expStatuses: ExperimentStatus[] = ['in-progress', 'in-progress', 'completed', 'not-started', 'paused'];
-    const focusStatuses: FocusStatus[] = ['focused', 'focused', 'focused', 'distracted', 'needs-help', 'away'];
-    const aiStatuses: AIStatus[] = ['idle', 'idle', 'monitoring', 'assisting', 'correcting'];
+    const isPresent = Math.random() > 0.15; // 85% present
+    const hasMistake = isPresent && Math.random() > 0.7; // 30% of present students have mistakes
+    const awayDuration = !isPresent ? Math.floor(Math.random() * 600) + 60 : 0;
+    const errorIndex = hasMistake ? Math.floor(Math.random() * 8) : Math.floor(Math.random() * 4) + 8;
     
-    const experiments = [
-      "Ohm's Law Verification",
-      "Pendulum Period",
-      "Acid-Base Titration",
-      "Plant Cell Observation",
-      "Electric Circuit",
-      "Light Refraction",
-      "Magnetism Study"
-    ];
+    const timestamp = new Date(now.getTime() - Math.floor(Math.random() * 3600000));
     
     return {
-      id: `student-${index + 1}`,
-      name,
-      deskNumber: deskNumbers[index],
-      attendanceStatus: statuses[Math.floor(Math.random() * statuses.length)],
-      experimentStatus: expStatuses[Math.floor(Math.random() * expStatuses.length)],
-      focusStatus: focusStatuses[Math.floor(Math.random() * focusStatuses.length)],
-      aiStatus: aiStatuses[Math.floor(Math.random() * aiStatuses.length)],
-      loginTime: `${8 + Math.floor(Math.random() * 2)}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')} AM`,
-      focusScore: 70 + Math.floor(Math.random() * 30),
-      learningStreak: Math.floor(Math.random() * 15) + 1,
-      currentExperiment: experiments[Math.floor(Math.random() * experiments.length)],
-      currentStep: Math.floor(Math.random() * 5) + 1,
-      totalSteps: 6,
+      StudentID: `STU${String(index + 1).padStart(3, '0')}`,
+      Timestamp: timestamp.toISOString(),
+      AwayDurationSeconds: awayDuration,
+      CurrentExperiment: experiments[Math.floor(Math.random() * experiments.length)],
+      DeskID: deskIDs[index],
+      ErrorDescription: errorDescriptions[errorIndex],
+      MistakeDetected: hasMistake,
+      PreferredLearningStyle: learningStyles[Math.floor(Math.random() * learningStyles.length)],
+      StudentName: name,
+      StudentPresent: isPresent,
+      SuggestedFix: suggestedFixes[errorIndex],
     };
   });
 };
 
-export interface DeskAlert {
-  id: string;
-  studentName: string;
-  deskNumber: string;
-  timeLeft: string;
-  duration: string;
-  attendanceImpact: string;
-}
-
-export interface ExperimentMistake {
-  id: string;
-  studentName: string;
-  experiment: string;
-  issue: string;
-  aiResponse: string;
-  status: 'detected' | 'corrected' | 'resolved';
-  time: string;
-}
-
-export interface VoiceAssistance {
-  id: string;
-  studentName: string;
-  helpType: 'voice' | 'video' | 'hint';
-  description: string;
-  resolved: boolean;
-  time: string;
-}
-
-// Generate mock alerts
-export const generateAlerts = (): DeskAlert[] => [
-  {
-    id: 'alert-1',
-    studentName: 'Indu',
-    deskNumber: 'A1',
-    timeLeft: '10:24 AM',
-    duration: '3m 24s',
-    attendanceImpact: 'Present but Inactive'
-  },
-  {
-    id: 'alert-2',
-    studentName: 'Sameer',
-    deskNumber: 'A2',
-    timeLeft: '10:15 AM',
-    duration: '8m 12s',
-    attendanceImpact: 'Marked Away'
-  }
-];
-
-// Generate mock experiment mistakes
-export const generateMistakes = (): ExperimentMistake[] => [
-  {
-    id: 'mistake-1',
-    studentName: 'Nikhil',
-    experiment: "Ohm's Law Verification",
-    issue: 'Incorrect resistor connection - polarity reversed',
-    aiResponse: 'Voice Hint Sent',
-    status: 'resolved',
-    time: '10:12 AM'
-  },
-  {
-    id: 'mistake-2',
-    studentName: 'Ria',
-    experiment: 'Acid-Base Titration',
-    issue: 'Wrong indicator used',
-    aiResponse: 'Video Tutorial Played',
-    status: 'corrected',
-    time: '10:18 AM'
-  },
-  {
-    id: 'mistake-3',
-    studentName: 'Aarav',
-    experiment: 'Electric Circuit',
-    issue: 'Missing ground connection',
-    aiResponse: 'Hint Card Shown',
-    status: 'detected',
-    time: '10:22 AM'
-  },
-  {
-    id: 'mistake-4',
-    studentName: 'Priya',
-    experiment: 'Light Refraction',
-    issue: 'Incorrect angle measurement',
-    aiResponse: 'Voice Correction',
-    status: 'resolved',
-    time: '10:05 AM'
-  }
-];
-
-// Generate mock voice assistance logs
-export const generateVoiceAssistance = (): VoiceAssistance[] => [
-  {
-    id: 'voice-1',
-    studentName: 'Diya',
-    helpType: 'voice',
-    description: 'Explained circuit diagram symbols',
-    resolved: true,
-    time: '9:45 AM'
-  },
-  {
-    id: 'voice-2',
-    studentName: 'Vivaan',
-    helpType: 'video',
-    description: 'Titration procedure walkthrough',
-    resolved: true,
-    time: '9:52 AM'
-  },
-  {
-    id: 'voice-3',
-    studentName: 'Rohan',
-    helpType: 'hint',
-    description: 'Formula reminder for resistance calculation',
-    resolved: false,
-    time: '10:08 AM'
-  },
-  {
-    id: 'voice-4',
-    studentName: 'Ananya',
-    helpType: 'voice',
-    description: 'Step-by-step pendulum setup',
-    resolved: true,
-    time: '10:15 AM'
-  }
-];
-
-// Student achievements
-export interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  unlocked: boolean;
-  date?: string;
-}
-
-export const achievements: Achievement[] = [
-  { id: '1', name: 'Perfect Attendance', description: 'Attend 30 consecutive days', icon: '🎯', unlocked: true, date: 'May 15, 2026' },
-  { id: '2', name: 'Fast Learner', description: 'Complete 5 experiments ahead of schedule', icon: '⚡', unlocked: true, date: 'May 20, 2026' },
-  { id: '3', name: 'Experiment Master', description: 'Complete 20 experiments with 90%+ accuracy', icon: '🔬', unlocked: true, date: 'May 28, 2026' },
-  { id: '4', name: 'AI Explorer', description: 'Use AI assistance 50 times effectively', icon: '🤖', unlocked: false },
-  { id: '5', name: 'Top Performer', description: 'Rank #1 in class for a week', icon: '🏆', unlocked: false },
-  { id: '6', name: 'Curiosity Champion', description: 'Ask 100 questions to AI', icon: '💡', unlocked: true, date: 'June 1, 2026' },
-];
+// Generate data with more mistakes for demo
+export const generateLiveData = (): StudentRecord[] => {
+  const records = generateStudentRecords();
+  // Ensure at least a few mistakes for demonstration
+  const indicesToMistake = [2, 5, 8, 12, 15];
+  indicesToMistake.forEach(idx => {
+    if (records[idx]) {
+      const errorIdx = Math.floor(Math.random() * 8);
+      records[idx].MistakeDetected = true;
+      records[idx].StudentPresent = true;
+      records[idx].ErrorDescription = errorDescriptions[errorIdx];
+      records[idx].SuggestedFix = suggestedFixes[errorIdx];
+    }
+  });
+  
+  // Ensure a few absent students
+  const absentIndices = [3, 7, 14];
+  absentIndices.forEach(idx => {
+    if (records[idx]) {
+      records[idx].StudentPresent = false;
+      records[idx].AwayDurationSeconds = Math.floor(Math.random() * 600) + 120;
+      records[idx].MistakeDetected = false;
+      records[idx].ErrorDescription = '';
+      records[idx].SuggestedFix = '';
+    }
+  });
+  
+  return records;
+};
 
 // Admin system health data
 export interface SystemHealth {
   name: string;
   status: 'online' | 'offline' | 'warning';
-  uptime: string;
-  load: number;
+  description: string;
 }
 
 export const systemHealthData: SystemHealth[] = [
-  { name: 'AI Engine', status: 'online', uptime: '99.99%', load: 45 },
-  { name: 'Database', status: 'online', uptime: '99.95%', load: 32 },
-  { name: 'Server', status: 'online', uptime: '99.98%', load: 58 },
-  { name: 'Network', status: 'online', uptime: '99.90%', load: 28 },
-  { name: 'Camera Systems', status: 'online', uptime: '99.85%', load: 67 },
-  { name: 'Voice Assistant', status: 'online', uptime: '99.92%', load: 41 },
-  { name: 'Analytics Engine', status: 'warning', uptime: '98.50%', load: 89 },
-  { name: 'Storage', status: 'online', uptime: '99.99%', load: 52 },
-  { name: 'API Gateway', status: 'online', uptime: '99.97%', load: 38 },
+  { name: 'DynamoDB Connected', status: 'online', description: 'Database operational' },
+  { name: 'API Running', status: 'online', description: 'All endpoints responding' },
+  { name: 'Dashboard Online', status: 'online', description: 'UI services active' },
 ];
 
-// Admin classroom analytics
-export interface ClassroomAnalytics {
-  totalStudents: number;
-  activeStudents: number;
-  inactiveStudents: number;
-  attendancePercent: number;
-  experimentsRunning: number;
-  experimentsCompleted: number;
-  aiCorrectionsIssued: number;
-  voiceAssistanceSessions: number;
-  learningEngagement: number;
+// Learning style analytics for donut chart
+export interface LearningStyleData {
+  name: string;
+  value: number;
+  color: string;
 }
 
-export const classroomAnalytics: ClassroomAnalytics = {
-  totalStudents: 30,
-  activeStudents: 27,
-  inactiveStudents: 3,
-  attendancePercent: 92,
-  experimentsRunning: 18,
-  experimentsCompleted: 45,
-  aiCorrectionsIssued: 23,
-  voiceAssistanceSessions: 56,
-  learningEngagement: 87,
+export const learningStyleAnalytics: LearningStyleData[] = [
+  { name: 'Visual', value: 8, color: 'oklch(0.55 0.12 185)' },
+  { name: 'Auditory', value: 7, color: 'oklch(0.70 0.12 230)' },
+  { name: 'Reading/Writing', value: 6, color: 'oklch(0.75 0.10 290)' },
+  { name: 'Kinesthetic', value: 9, color: 'oklch(0.75 0.12 160)' },
+];
+
+// Experiment analytics
+export interface ExperimentData {
+  name: string;
+  students: number;
+}
+
+export const experimentAnalytics: ExperimentData[] = [
+  { name: "Ohm's Law", students: 6 },
+  { name: 'Titration', students: 5 },
+  { name: 'Pendulum', students: 4 },
+  { name: 'Circuits', students: 5 },
+  { name: 'Refraction', students: 4 },
+  { name: 'Cell Study', students: 3 },
+  { name: 'Magnetism', students: 3 },
+];
+
+// Recent errors for admin dashboard
+export interface RecentError {
+  id: string;
+  studentName: string;
+  errorDescription: string;
+  timestamp: string;
+}
+
+export const generateRecentErrors = (): RecentError[] => {
+  const now = new Date();
+  return [
+    {
+      id: 'err-1',
+      studentName: 'Nikhil',
+      errorDescription: 'Incorrect resistor connection - polarity reversed',
+      timestamp: new Date(now.getTime() - 120000).toLocaleTimeString(),
+    },
+    {
+      id: 'err-2',
+      studentName: 'Ria',
+      errorDescription: 'Wrong indicator used in titration',
+      timestamp: new Date(now.getTime() - 300000).toLocaleTimeString(),
+    },
+    {
+      id: 'err-3',
+      studentName: 'Aarav',
+      errorDescription: 'Missing ground connection',
+      timestamp: new Date(now.getTime() - 480000).toLocaleTimeString(),
+    },
+    {
+      id: 'err-4',
+      studentName: 'Priya',
+      errorDescription: 'Incorrect angle measurement',
+      timestamp: new Date(now.getTime() - 720000).toLocaleTimeString(),
+    },
+  ];
 };
 
-// Chart data for analytics
-export const attendanceChartData = [
-  { day: 'Mon', attendance: 95, engagement: 88 },
-  { day: 'Tue', attendance: 92, engagement: 91 },
-  { day: 'Wed', attendance: 88, engagement: 85 },
-  { day: 'Thu', attendance: 94, engagement: 92 },
-  { day: 'Fri', attendance: 90, engagement: 89 },
-];
-
-export const focusTrendData = [
-  { time: '9:00', focused: 28, distracted: 2 },
-  { time: '9:30', focused: 26, distracted: 4 },
-  { time: '10:00', focused: 24, distracted: 6 },
-  { time: '10:30', focused: 27, distracted: 3 },
-  { time: '11:00', focused: 25, distracted: 5 },
-];
-
-export const experimentProgressData = [
-  { name: "Ohm's Law", completed: 85 },
-  { name: 'Titration', completed: 72 },
-  { name: 'Pendulum', completed: 90 },
-  { name: 'Circuits', completed: 65 },
-  { name: 'Refraction', completed: 78 },
-];
-
-// Timesheet data for students
-export interface TimesheetEntry {
-  label: string;
-  startTime: string;
-  endTime: string;
-  duration: string;
-  type: 'login' | 'study' | 'experiment' | 'break' | 'logout';
+// System status for admin
+export interface SystemStatus {
+  lastUpdateTime: string;
+  dataRefreshInterval: string;
+  totalActiveSessions: number;
 }
 
-export const generateTimesheet = (): TimesheetEntry[] => [
-  { label: 'Login', startTime: '8:45 AM', endTime: '8:45 AM', duration: '-', type: 'login' },
-  { label: 'Study Session', startTime: '8:45 AM', endTime: '9:30 AM', duration: '45m', type: 'study' },
-  { label: 'Experiment: Ohm\'s Law', startTime: '9:30 AM', endTime: '10:15 AM', duration: '45m', type: 'experiment' },
-  { label: 'Short Break', startTime: '10:15 AM', endTime: '10:30 AM', duration: '15m', type: 'break' },
-  { label: 'Experiment: Titration', startTime: '10:30 AM', endTime: '11:15 AM', duration: '45m', type: 'experiment' },
-  { label: 'Desk Presence', startTime: '8:45 AM', endTime: 'Now', duration: '2h 45m', type: 'study' },
-];
-
-// AI Guidance history for students
-export interface AIGuidance {
-  id: string;
-  type: 'voice' | 'hint' | 'video' | 'correction';
-  title: string;
-  description: string;
-  time: string;
-  resolved: boolean;
-}
-
-export const generateAIGuidance = (): AIGuidance[] => [
-  { id: '1', type: 'voice', title: 'Circuit Setup Help', description: 'Guided through proper resistor placement', time: '9:35 AM', resolved: true },
-  { id: '2', type: 'hint', title: 'Formula Reminder', description: 'V = IR formula displayed', time: '9:42 AM', resolved: true },
-  { id: '3', type: 'correction', title: 'Polarity Error', description: 'Corrected battery connection orientation', time: '9:55 AM', resolved: true },
-  { id: '4', type: 'video', title: 'Titration Technique', description: 'Watched proper pipette handling', time: '10:35 AM', resolved: true },
-  { id: '5', type: 'hint', title: 'Safety Reminder', description: 'Goggles required for acid handling', time: '10:40 AM', resolved: false },
-];
+export const getSystemStatus = (): SystemStatus => {
+  return {
+    lastUpdateTime: new Date().toLocaleTimeString(),
+    dataRefreshInterval: '5 seconds',
+    totalActiveSessions: 27,
+  };
+};

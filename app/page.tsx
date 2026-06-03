@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { AnimatedOwl } from '@/components/animated-owl';
 import { FloatingParticles } from '@/components/floating-particles';
@@ -20,16 +20,22 @@ import {
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
-  const [motivationalMessage, setMotivationalMessage] = useState('');
+  const [messageIndex, setMessageIndex] = useState(0);
 
+  // Rotate motivational messages every 4 seconds
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
-    setMotivationalMessage(motivationalMessages[randomIndex]);
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % motivationalMessages.length);
+    }, 4000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-background">
       <FloatingParticles />
+      
+      {/* Subtle grid background */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-40" />
       
       {/* Navigation */}
       <motion.nav
@@ -41,7 +47,7 @@ export default function LandingPage() {
         <div className="mx-4 mt-4">
           <div className="glass rounded-2xl px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="font-semibold text-lg text-foreground">Curious Nest</span>
@@ -61,12 +67,12 @@ export default function LandingPage() {
             
             <div className="flex items-center gap-3">
               <Link href="/login">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="text-foreground">
                   Sign In
                 </Button>
               </Link>
               <Link href="/login">
-                <Button size="sm" className="bg-primary hover:bg-primary/90">
+                <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   Get Started
                 </Button>
               </Link>
@@ -86,22 +92,28 @@ export default function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center lg:text-left"
             >
-              {/* Motivational Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8"
-              >
-                <Sparkles className="w-4 h-4 text-accent" />
-                <span className="text-sm text-muted-foreground">{motivationalMessage}</span>
-              </motion.div>
+              {/* Rotating Motivational Message */}
+              <div className="h-16 mb-6">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={messageIndex}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                    className="inline-flex items-center gap-2 glass rounded-full px-5 py-3"
+                  >
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <span className="text-sm text-muted-foreground italic">&quot;{motivationalMessages[messageIndex]}&quot;</span>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
               {/* Main Title */}
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-balance">
                 <span className="text-foreground">Curious</span>
                 <br />
-                <span className="bg-gradient-to-r from-secondary via-support to-secondary bg-clip-text text-transparent">
+                <span className="gradient-text">
                   Nest
                 </span>
               </h1>
@@ -111,7 +123,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                className="text-xl md:text-2xl text-muted-foreground mb-4"
+                className="text-xl md:text-2xl text-muted-foreground mb-4 font-medium"
               >
                 Explore • Learn • Grow
               </motion.p>
@@ -135,17 +147,17 @@ export default function LandingPage() {
                 className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
               >
                 <Link href="/login">
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 w-full sm:w-auto group">
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto group">
                     Get Started
                     <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link href="/dashboard/teacher">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto glass border-border/50">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-border text-foreground hover:bg-muted">
                     View Dashboard
                   </Button>
                 </Link>
-                <Button size="lg" variant="ghost" className="w-full sm:w-auto group">
+                <Button size="lg" variant="ghost" className="w-full sm:w-auto group text-muted-foreground hover:text-foreground">
                   <Play className="w-4 h-4 mr-2" />
                   Request Demo
                 </Button>
@@ -213,7 +225,7 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-24 relative">
+      <section id="how-it-works" className="py-24 relative bg-muted/30">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -240,15 +252,15 @@ export default function LandingPage() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="relative"
               >
-                <div className="glass rounded-2xl p-8 text-center h-full hover:shadow-lg transition-all duration-300">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-secondary/20 to-support/20 flex items-center justify-center mx-auto mb-6">
-                    <span className="text-3xl font-bold text-secondary">{index + 1}</span>
+                <div className="bg-card rounded-2xl p-8 text-center h-full card-shadow border border-border hover:shadow-lg transition-all duration-300">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center mx-auto mb-6">
+                    <span className="text-3xl font-bold gradient-text">{index + 1}</span>
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-foreground">{step.title}</h3>
                   <p className="text-muted-foreground">{step.description}</p>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-secondary/50 to-transparent" />
+                  <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />
                 )}
               </motion.div>
             ))}
@@ -264,9 +276,9 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="glass rounded-3xl p-12 md:p-16 text-center relative overflow-hidden"
+            className="bg-card rounded-3xl p-12 md:p-16 text-center relative overflow-hidden card-shadow border border-border"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-support/10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
             <div className="relative z-10">
               <AnimatedOwl size="md" showParticles={false} />
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground mt-8">
@@ -277,12 +289,12 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/login">
-                  <Button size="lg" className="bg-primary hover:bg-primary/90">
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
                     Start Free Trial
                     <ChevronRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
-                <Button size="lg" variant="outline" className="glass">
+                <Button size="lg" variant="outline" className="border-border text-foreground hover:bg-muted">
                   Schedule Demo
                 </Button>
               </div>
@@ -292,11 +304,11 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-border/50">
+      <footer className="py-12 border-t border-border bg-muted/20">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-secondary to-primary flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-primary-foreground" />
               </div>
               <span className="font-semibold text-foreground">Curious Nest</span>
@@ -327,13 +339,13 @@ const features = [
     icon: Brain,
     title: 'AI Experiment Monitoring',
     description: 'Real-time detection of experiment mistakes with intelligent corrections and voice guidance.',
-    color: 'from-secondary to-secondary/50',
+    color: 'from-primary to-primary/50',
   },
   {
     icon: Users,
     title: 'Smart Desk Detection',
     description: 'Instant alerts when students leave their workspace with complete activity timeline.',
-    color: 'from-support to-support/50',
+    color: 'from-secondary to-secondary/50',
   },
   {
     icon: Microscope,
@@ -351,13 +363,13 @@ const features = [
     icon: Zap,
     title: 'Voice Assistance',
     description: 'AI-powered voice help, video tutorials, and hint cards for instant support.',
-    color: 'from-secondary to-support/50',
+    color: 'from-primary to-secondary/50',
   },
   {
     icon: Shield,
     title: 'Classroom Heatmap',
     description: 'Visual overview of student focus levels and engagement across the classroom.',
-    color: 'from-primary to-primary/50',
+    color: 'from-support to-support/50',
   },
 ];
 
@@ -398,7 +410,7 @@ function FeatureCard({ feature, index }: FeatureCardProps) {
       whileHover={{ y: -5 }}
       className="group"
     >
-      <div className="glass rounded-2xl p-6 h-full hover:shadow-lg transition-all duration-300 border border-transparent hover:border-secondary/20">
+      <div className="bg-card rounded-2xl p-6 h-full card-shadow border border-border hover:border-primary/30 transition-all duration-300">
         <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
           <Icon className="w-6 h-6 text-primary-foreground" />
         </div>
