@@ -1,0 +1,261 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Curious Nest Theme - Deep Navy Blue Primary */
+  --background: oklch(0.98 0.005 240);
+  --foreground: oklch(0.15 0.03 240);
+  
+  /* Card with glassmorphism support */
+  --card: oklch(0.99 0.002 240);
+  --card-foreground: oklch(0.15 0.03 240);
+  
+  --popover: oklch(0.99 0.002 240);
+  --popover-foreground: oklch(0.15 0.03 240);
+  
+  /* Deep Navy Blue - Primary */
+  --primary: oklch(0.25 0.08 250);
+  --primary-foreground: oklch(0.98 0.005 240);
+  
+  /* Turquoise/Teal - Secondary */
+  --secondary: oklch(0.65 0.15 185);
+  --secondary-foreground: oklch(0.98 0.005 240);
+  
+  /* Muted tones */
+  --muted: oklch(0.94 0.01 240);
+  --muted-foreground: oklch(0.45 0.02 240);
+  
+  /* Warm Yellow - Accent */
+  --accent: oklch(0.85 0.18 85);
+  --accent-foreground: oklch(0.20 0.05 85);
+  
+  /* Support Purple */
+  --support: oklch(0.55 0.2 290);
+  --support-foreground: oklch(0.98 0.005 290);
+  
+  /* Fresh Green - Nature Accent */
+  --nature: oklch(0.65 0.2 145);
+  --nature-foreground: oklch(0.98 0.005 145);
+  
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.98 0.005 25);
+  
+  --border: oklch(0.90 0.01 240);
+  --input: oklch(0.92 0.01 240);
+  --ring: oklch(0.55 0.15 185);
+  
+  /* Chart colors for analytics */
+  --chart-1: oklch(0.65 0.15 185);
+  --chart-2: oklch(0.55 0.2 290);
+  --chart-3: oklch(0.85 0.18 85);
+  --chart-4: oklch(0.65 0.2 145);
+  --chart-5: oklch(0.25 0.08 250);
+  
+  --radius: 0.75rem;
+  
+  /* Sidebar */
+  --sidebar: oklch(0.20 0.06 250);
+  --sidebar-foreground: oklch(0.95 0.005 240);
+  --sidebar-primary: oklch(0.65 0.15 185);
+  --sidebar-primary-foreground: oklch(0.98 0.005 240);
+  --sidebar-accent: oklch(0.30 0.06 250);
+  --sidebar-accent-foreground: oklch(0.95 0.005 240);
+  --sidebar-border: oklch(0.30 0.04 250);
+  --sidebar-ring: oklch(0.65 0.15 185);
+  
+  /* Glass effect variables */
+  --glass-bg: oklch(0.99 0.002 240 / 0.7);
+  --glass-border: oklch(0.95 0.005 240 / 0.5);
+}
+
+.dark {
+  --background: oklch(0.12 0.03 250);
+  --foreground: oklch(0.95 0.005 240);
+  
+  --card: oklch(0.18 0.03 250);
+  --card-foreground: oklch(0.95 0.005 240);
+  
+  --popover: oklch(0.18 0.03 250);
+  --popover-foreground: oklch(0.95 0.005 240);
+  
+  --primary: oklch(0.65 0.15 185);
+  --primary-foreground: oklch(0.12 0.03 250);
+  
+  --secondary: oklch(0.55 0.2 290);
+  --secondary-foreground: oklch(0.95 0.005 240);
+  
+  --muted: oklch(0.25 0.03 250);
+  --muted-foreground: oklch(0.65 0.02 240);
+  
+  --accent: oklch(0.85 0.18 85);
+  --accent-foreground: oklch(0.12 0.03 250);
+  
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.95 0.005 240);
+  
+  --border: oklch(0.28 0.03 250);
+  --input: oklch(0.25 0.03 250);
+  --ring: oklch(0.65 0.15 185);
+  
+  --sidebar: oklch(0.15 0.04 250);
+  --sidebar-foreground: oklch(0.95 0.005 240);
+  --sidebar-primary: oklch(0.65 0.15 185);
+  --sidebar-primary-foreground: oklch(0.95 0.005 240);
+  --sidebar-accent: oklch(0.22 0.04 250);
+  --sidebar-accent-foreground: oklch(0.95 0.005 240);
+  --sidebar-border: oklch(0.25 0.03 250);
+  --sidebar-ring: oklch(0.65 0.15 185);
+  
+  --glass-bg: oklch(0.18 0.03 250 / 0.7);
+  --glass-border: oklch(0.28 0.03 250 / 0.5);
+}
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-support: var(--support);
+  --color-support-foreground: var(--support-foreground);
+  --color-nature: var(--nature);
+  --color-nature-foreground: var(--nature-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-strong {
+  background: oklch(0.99 0.002 240 / 0.85);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid oklch(0.95 0.005 240 / 0.6);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-blink {
+  animation: blink 4s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, oklch(0.95 0.005 240 / 0.5) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Leaf animation for floating particles */
+@keyframes leaf-fall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+.animate-leaf {
+  animation: leaf-fall linear infinite;
+}
+
+/* Status indicator animations */
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; }
+  50% { box-shadow: 0 0 0 4px transparent; }
+}
+
+.status-indicator {
+  animation: status-pulse 2s ease-in-out infinite;
+}
